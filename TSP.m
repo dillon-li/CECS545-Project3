@@ -1,39 +1,65 @@
 function [ distMin, weightedPath, unweightedPath, visualizeParams ] = TSP( filename )
 % Main Traveling Salesman Problem
-% Project 2 Style: Find the shortest path in a hardcoded directed graph.
+% Project 3 Style: Closest Edge Insertion Heuristic:
 
 % Input: Filename
 
 % Output:
-% distMin - The minimum distance required to travel for a weighted graph
-% weightedPath - The minimum path for a weighted graph (distances included)
-% unweightedPath - The path assuming all node distances the same
-% visualizeParams - Paramters for 'visualize_search' to visualize different
-% searchs. Cell array. Details below:
-    % BFS_T - Table of traversal for breath first search
-    % DFS_T - Table of traversal for depth first search
-    % g - Directed graph of cities
-    % x - X coordinates
-    % y - Y coordinates
 
 % Read in Coordinates
-coords = ReadFromSample(filename);
+[x,y] = ReadFromSample(filename);
 
-% Make directed graph (weighted and unweighted)
-[gW,g,x,y] = MakeGraph(coords);
+% Array of cities not in the current tour (initially cities 2:end)
+unLoved = zeros(size(x,2)-1,1);
+for i = 1:size(unLoved,1)
+    unLoved(i) = i+1;
+end
 
-% Perform Breadth first search and Depth first search
-BFS_T = bfsearch(g,1,'allevents');
-DFS_T = dfsearch(g,1,'allevents');
-
-% Create parameters for search visualization
-visualizeParams = [{g} {BFS_T} {DFS_T} {x} {y}];
-
-% Plot the weighted graph with shortest path
-[weightedPath, distMin] = PlotGraph(gW,x,y);
-
-% Plot the unweighted graph with shortest path
-[unweightedPath, ~] = PlotGraph(g,x,y);
+% Initialization: Use first city to create the first edge
+currentTour = [1];
+currentCity = 1;
+closeCityDist = inf;
+% Find closest city
+for j = 1:size(unLoved,1)
+    dist = Distance(x(currentCity), y(currentCity), x(unLoved(j)), y(unLoved(j)));
+    if dist < closeCityDist
+        closeCityDist = dist;
+        closeCity = unLoved(j);
+        iToLove = j;
+    end
+end
+currentTour = [currentTour closeCity];
+unLoved(j) = [];
+EdgeLords = [currentCity; closeCity];
+currentCity = closeCity; % Set current to next city for algorithm
+    
+% Loop until all cities are loved (added to the tour)
+while size(unLoved,1) ~= 0
+    closeCityDist = inf;
+    
+    % Find closest city
+    for j = 1:size(unLoved,1)
+        dist = Distance(x(currentCity), x(unLoved(j)), y(currentCity), y(unLoved(j)));
+        if dist < closeCityDist
+            closeCityDist = dist;
+            closeCity = unLoved(j);
+            iToLove = j;
+        end
+    end
+    
+    % Pick city to add to tour, and remove it from unLoved (make it loved)
+    currentTour = [currentTour closeCity];
+    unLoved(j) = [];
+    
+    % Make edgier
+    edgier = [currentCity; closeCity];
+    EdgeLords = [EdgeLords edgier];
+    
+    % Find the edgiest of current edges
+    for k = 1:size(EdgeLords,2)
+        
+    end
+end
 
 end
 
