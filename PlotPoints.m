@@ -1,4 +1,4 @@
-function [] = PlotPoints( x, y, ~ )
+function [] = PlotPoints( x, y )
 % Plot points given a list of coordinates
 % x contains all x coordinates
 % y contains all y coordinates
