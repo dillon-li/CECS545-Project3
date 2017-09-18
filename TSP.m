@@ -1,4 +1,4 @@
-function [ distMin, weightedPath, unweightedPath, visualizeParams ] = TSP( filename )
+function [ fullDist, Edgelords ] = TSP( filename )
 % Main Traveling Salesman Problem
 % Project 3 Style: Closest Edge Insertion Heuristic:
 
@@ -36,6 +36,7 @@ currentCity = closeCity; % Set current to next city for algorithm
 % Loop until all cities are loved (added to the tour)
 while size(unLoved,1) ~= 0
     closeCityDist = inf;
+    pointToEdge = inf;
     
     % Find closest city
     for j = 1:size(unLoved,1)
@@ -57,7 +58,16 @@ while size(unLoved,1) ~= 0
     
     % Find the edgiest of current edges
     for k = 1:size(EdgeLords,2)
-        
+        cStart = EdgeLords(1,k); % Starting city of line segment
+        cEnd = EdgeLords(2,k); % Ending city of line segment
+        coordStart = [x(cStart) y(cStart) 0];
+        coordEnd = [x(cEnd) y(cEnd) 0];
+        coordCity = [x(closeCity) y(closeCity) 0];
+        d = point_to_line(coordCity, coordStart, coordEnd);
+        if d < pointToEdge
+            pointToEdge = d; % Smallest distance from segment to new city
+            edgiest = k; % Index of closest edge
+        end
     end
 end
 
