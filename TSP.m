@@ -52,11 +52,10 @@ count = 3;
     
 % Loop until all cities are loved (added to the tour)
 while size(unLoved,2) ~= 0
-    edgiest = inf; % Distance from point to line segment    
+    edgiest = inf; % Distance from point to line segment  
+    currentCity = unLoved(1);
     % Find the closest edge-city pair
     for k = 1:size(EdgeLords,2)
-        for j = 1:size(unLoved,1)
-            currentCity = unLoved(j);
             cStart = EdgeLords(1,k); % Starting city of line segment
             cEnd = EdgeLords(2,k); % Ending city of line segment
             dist1 = Distance(x(cStart), y(cStart), x(currentCity), y(currentCity));
@@ -65,22 +64,20 @@ while size(unLoved,2) ~= 0
             d = dist1 + dist2 - dist3;
             if d < edgiest
                 edgiest = d; % Smallest distance from segment to new city
-                edgeIndex = k; % Index of closest edge in pair
-                cityIndex = j; % Index of closest city in pair
+                edgeIndex = k; % Index of closest edge
             end
-        end
     end
     % Add the city in between the closest edge
     temp = EdgeLords(2, edgeIndex); % Intermediate node
-    EdgeLords(2,edgeIndex) = unLoved(cityIndex); % Add first part of new edges
-    newEdge2 = [unLoved(cityIndex); temp]; % Add second part of new edges
+    EdgeLords(2,edgeIndex) = currentCity; % Add first part of new edges
+    newEdge2 = [currentCity; temp]; % Add second part of new edges
     EdgeLords = [EdgeLords newEdge2];
     g = MakeGraph(EdgeLords,x,y,NodeTable);
     count = count + 1;
     %hold on;
     plot(g,'XData',x,'YData',y);
     hold off;
-    unLoved(cityIndex) = [];
+    unLoved(1) = [];
     
 end
  
