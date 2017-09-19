@@ -21,8 +21,7 @@ for i = 1:size(x,2)
     NodeTable(i,1) = num2cell(i);
 end
 % Initialization: Begin with a tour of 3 cities
-currentTour = [1]; % Can technically start with any city
-currentCity = 1;
+currentCity = 1; % Can technically start with any city
 unLoved(1) = [];
 dist = zeros(size(x,2)-1,1);
 % closeCityDist = inf;
@@ -34,8 +33,7 @@ distCopy = dist;
 dist = sort(dist);
 city2 = find(distCopy==dist(1)); % Index closest to city 1
 city3 = find(distCopy==dist(2)); % Index second closest to city 1
-% Add these two cities to the tour - full beginning cycle
-currentTour = [currentTour unLoved(city2) unLoved(city3) currentCity];
+
 % Build starting edges
 edge1 = [currentCity; unLoved(city2)];
 edge2 = [unLoved(city2); unLoved(city3)];
@@ -79,6 +77,8 @@ while size(unLoved,2) ~= 0
     unLoved(1) = [];
     % waitforbuttonpress;
 end
+
+distFinal = AddPath(EdgeLords,x,y) % Get distance traveled.
  
 end
  
