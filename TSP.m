@@ -1,4 +1,4 @@
-function [ EdgeLords, x, y ] = TSP( filename )
+function [ EdgeLords, g, distFinal] = TSP( filename )
 % Main Traveling Salesman Problem
 % Project 3 Style: Closest Edge Insertion Heuristic:
  
@@ -9,10 +9,10 @@ function [ EdgeLords, x, y ] = TSP( filename )
 % Read in Coordinates
 [x,y] = ReadFromSample(filename);
  
-% Array of cities not in the current tour (initially cities 2:end)
-unLoved = zeros(size(x,2)-1,1);
+% Array of cities not in the current tour (initially cities 1:end)
+unLoved = zeros(size(x,2),1);
 for i = 1:size(unLoved,1)
-    unLoved(i) = i+1;
+    unLoved(i) = i;
 end
 
 % Node Table
@@ -21,8 +21,9 @@ for i = 1:size(x,2)
     NodeTable(i,1) = num2cell(i);
 end
 % Initialization: Begin with a tour of 3 cities
-currentTour = [1];
+currentTour = [1]; % Can technically start with any city
 currentCity = 1;
+unLoved(1) = [];
 dist = zeros(size(x,2)-1,1);
 % closeCityDist = inf;
 % Calculate distances for all cities from city 1
@@ -46,10 +47,10 @@ unLoved(city2) = [];
 indexToRemove = find(unLoved==city3);
 unLoved(indexToRemove) = [];
 
-%[wG, g] = MakeGraph(EdgeLords,x,y);
-% PlotPoints(x,y);
-count = 3;
-    
+g = MakeGraph(EdgeLords,x,y,NodeTable);
+plot(g,'XData',x,'YData',y);
+% waitforbuttonpress;
+
 % Loop until all cities are loved (added to the tour)
 while size(unLoved,2) ~= 0
     edgiest = inf; % Distance from point to line segment  
@@ -73,12 +74,10 @@ while size(unLoved,2) ~= 0
     newEdge2 = [currentCity; temp]; % Add second part of new edges
     EdgeLords = [EdgeLords newEdge2];
     g = MakeGraph(EdgeLords,x,y,NodeTable);
-    count = count + 1;
-    %hold on;
     plot(g,'XData',x,'YData',y);
     hold off;
     unLoved(1) = [];
-    
+    % waitforbuttonpress;
 end
  
 end
